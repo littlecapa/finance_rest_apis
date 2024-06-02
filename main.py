@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 import requests
+from libs.net_lib import get_ip_address
 
 API_KEY = "cHls4n1Au95DZ5VMkk3twH3y2SUyZxg1"
 
@@ -18,3 +19,8 @@ async def get_stock_price(symbol: str):
             raise HTTPException(status_code=404, detail="Stock not found")
     else:
         raise HTTPException(status_code=response.status_code, detail="Error retrieving stock information")
+
+@app.get("/status")
+def get_status():
+    ip_address = get_ip_address()
+    return {"ip": ip_address, "status": "running"}
