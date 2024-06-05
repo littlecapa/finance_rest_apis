@@ -1,0 +1,10 @@
+{
+    "API_KEY": "8cb69982-9782-4c13-a163-3fd78c4dfc9a",
+    "API_BASE_URL": "https://api.openfigi.com/",
+
+    "API_URLS": {
+        "quote": "xxx",
+        "lookup_isin": "v3/mapping",
+        "lookup_wkn": "v3/mapping"
+    }
+}

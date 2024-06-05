@@ -1,26 +1,12 @@
 from fastapi import FastAPI, HTTPException
-import requests
-from libs.net_lib import get_ip_address
-
-API_KEY = "cHls4n1Au95DZ5VMkk3twH3y2SUyZxg1"
+from api import stock_price, status, lookup
 
 app = FastAPI()
 
-@app.get("/stock_price/{symbol}")
-async def get_stock_price(symbol: str):
-    # Replace with the actual API endpoint and key
-    api_url = f"https://financialmodelingprep.com/api/v3/quote/{symbol}?apikey={API_KEY}"
-    response = requests.get(api_url)
-    if response.status_code == 200:
-        data = response.json()
-        if data:
-            return data[0]
-        else:
-            raise HTTPException(status_code=404, detail="Stock not found")
-    else:
-        raise HTTPException(status_code=response.status_code, detail="Error retrieving stock information")
+app.include_router(stock_price.router)
+app.include_router(status.router)
+app.include_router(lookup.router)  # Include the lookup router
 
-@app.get("/status")
-def get_status():
-    ip_address = get_ip_address()
-    return {"ip": ip_address, "status": "running"}
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to the Finance API"}

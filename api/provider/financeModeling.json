@@ -1,0 +1,10 @@
+{
+    "API_KEY": "cHls4n1Au95DZ5VMkk3twH3y2SUyZxg1",
+    "API_BASE_URL": "https://financialmodelingprep.com/api",
+
+    "API_URLS": {
+        "quote": "v3/quote/{symbol}?apikey={API_KEY}",
+        "lookup_isin": "v4/lookup?isin={isin}&apikey={API_KEY}",
+        "lookup_wkn": "v4/lookup?wkn={wkn}&apikey={API_KEY}"
+    }
+}

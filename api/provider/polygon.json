@@ -1,0 +1,8 @@
+{
+    "API_KEY": "3Bk8eQ2j0T_feI1XV6zNnraMkzJs6lug",
+    "API_BASE_URL": "https://api.polygon.io/",
+
+    "API_URLS": {
+        "quote": "v2/aggs/ticker/{symbol}/prev?adjusted=true&apikey={API_KEY}"
+    }
+}
