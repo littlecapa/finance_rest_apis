@@ -1,28 +1,33 @@
 from fastapi import FastAPI, HTTPException
-from libs.logging import setup_logger
-from libs.track_execution import track_execution_time
+from libs.log_singleton import Log_Singelton
 from api.api_libs.net_lib import get_ip_address
+import logging
 
 # Setup logger
-logger = setup_logger()
+mylog = Log_Singelton(logger_name="stock_api_logger", logstash_host="logstash", logstash_port=5000, level=logging.INFO)
+mylog.log_info_message("App started")
 
 # Create FastAPI app
 app = FastAPI()
 
-# Decorate the root path with execution time tracking
-@track_execution_time(logger)
-@app.get("/", response_model=dict)
-async def read_root():
-    return {"info": "Welcome to the Finance API"}
+#@track_execution_time(logger)
+#@app.get("/", response_model=dict)
+#async def read_root():
+#    print("Root")
+#    return {"info": "Welcome to the Finance API"}
 
-@track_execution_time(logger)
-@app.get("/status", response_model=dict)
-async def get_status():
+#@track_execution_time(logger)
+
+@app.get("/health", response_model=dict)
+def get_health():
+    mylog.start_execution(__name__)
     ip_address = get_ip_address()
-    return {"ip": ip_address, "status": "running"}
+    mylog.log_execution(__name__, info="Status Ok")
+    return {"ip": ip_address, "status": "ok"}
 
-@track_execution_time(logger)
-@app.get("/stock_price_isin", response_model=dict)
-async def get_stock_price_isin(isin: str):
-    print(isin)
-    return {'price': 0.0, 'currency': 'xxx'}
+#@track_execution_time(logger)
+#@app.get("/stock_price_isin", response_model=dict)
+#async def get_stock_price_isin(isin: str):
+#    if not isin:
+#        raise HTTPException(status_code=400, detail="Invalid ISIN")
+#    return {'price': 0.0, 'currency': 'xxx'}

@@ -3,17 +3,17 @@ from pythonjsonlogger import jsonlogger
 import logstash
 import socket
 
-def setup_logger(logstash_host="logstash", logstash_port=5000, level=logging.INFO):
-    logger = logging.getLogger("stock_logger")
+def setup_logger(logger_name="stock_api_logger", logstash_host="logstash", logstash_port=5000, level=logging.INFO):
+    logger = logging.getLogger(logger_name)
     logger.setLevel(level)
     
     # Prevent propagation to the root logger (optional)
     logger.propagate = False
 
-    # Log to file (JSON format)
+   # Log to file with a custom format
     file_handler = logging.FileHandler("stock_prices.log")
-    file_formatter = jsonlogger.JsonFormatter()
-    file_handler.setFormatter(file_formatter)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
 
     # Log to ELK (via Logstash)
