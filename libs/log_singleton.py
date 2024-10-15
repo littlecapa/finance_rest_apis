@@ -28,10 +28,18 @@ class Stack:
     def is_empty(self):
         return len(self.items) == 0
     
+    def __str__(self):
+        # String representation of the stack
+        return f"Stack: {str(self.items)}"
+    
 class StackElement:
     def __init__(self, start_time, function_name):
         self.start_time = start_time
         self.function_name = function_name
+
+    def __str__(self):
+        # String representation of the stack
+        return f"{self.start_time} {self.function_name}\n"
 
 class BytesFormatter(jsonlogger.JsonFormatter):
         def format(self, record):
@@ -72,23 +80,25 @@ class Log_Singelton:
     def start_execution(cls, function_name):
         cls.stack.push(StackElement(start_time=time.time(), function_name=function_name))
 
-    def log_execution(cls, function_name, symbol=None, isin=None, price=None, currency=None, error=None, info=None, level="info"):
+    def log_execution(cls, function_name, status, symbol=None, isin=None, price=None, currency=None, info=None, level="info"):
         top = cls.stack.pop()
         if top.function_name != function_name:
-            raise Exception("Stack out of Sync {top.function_name} {function_name}")
+            raise Exception(f"Stack out of Sync {top.function_name} {function_name}")
         exec_time = (time.time()-top.start_time)
         log_data_all = {
+            "Function": function_name,
+            "Status": status,
             "Symbol": symbol,
             "ISIN": isin,
             "Price": price,
             "Currency": currency,
             "Exec_Time_sec": exec_time,
-            "Function": function_name,
-            "Error": error,
             "Info": info
         }
+        cls.log_log_data(log_data_all, level)
+    
+    def log_log_data(cls, log_data_all, level):
         log_data = json.dumps({key: value for key, value in log_data_all.items() if value is not None})
-
         if level == "info":
             cls.logger.info(log_data)
         elif level == "error":
@@ -99,8 +109,20 @@ class Log_Singelton:
             cls.logger.warning(log_data)
         else:
             cls.logger.info(log_data)
-    
+        
     def log_info_message(cls, message):
         cls.logger.info(message)
+
+    def log_error(cls, status, error_message, exit_function = False):
+        if exit_function:
+            top = cls.stack.pop()
+        else:
+            top = cls.stack.peek()
+        log_data = {
+            "Function": top.function_name ,
+            "Status": status,
+            "Error": error_message
+        }
+        cls.log_log_data(log_data, "error")
 
  
